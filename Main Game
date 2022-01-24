@@ -1,0 +1,231 @@
+#@title BlackJack for Dummies!
+# initializing our lists
+import random
+def createDeck():
+  suits = ['Hearts', 'Spades', 'Clubs', 'Diamonds']
+  faces = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A']
+  #decks = [1, 2, 3, 4, 5, 6, 7, 8]
+
+  cards = []
+
+  for suit in suits:
+    for face in faces:
+      cards.insert(0, {face : suit})
+
+  return cards
+
+gameDeck = []
+
+for i in range(1,9):
+  gameDeck = gameDeck + createDeck()
+
+
+dealerHand = []
+playerHand = []
+
+
+
+
+
+def cardValue(card):
+  # have not assigned ace a value yet lol
+  value = 0
+  face = list(card.keys())[0]
+  if face == 2:
+    value = 2
+  elif face == 3:
+    value = 3
+  elif face == 4:
+    value = 4
+  elif face == 5:
+    value = 5
+  elif face == 6:
+    value = 6
+  elif face == 7:
+    value = 7
+  elif face == 8:
+    value = 8
+  elif face == 9:
+    value = 9
+  elif face == 10:
+    value = 10
+  elif face == 'J':
+    value = 10
+  elif face == 'Q':
+    value = 10
+  elif face == 'K':
+    value = 10
+  elif face == 'A':
+    value = 1
+  else:
+    value = 0
+  return value
+
+#func below make one and pass dif parameters
+
+def containsAce(hand):
+  for card in hand:
+    face = list(card.keys())[0]
+    if face == 'A':
+      return True
+  return False
+
+
+
+def dealerSum(dealerHand):
+  sum = 0
+  for card in dealerHand:
+    sum = sum + cardValue(card)
+  testSum = 0
+  if containsAce(dealerHand):
+    testSum = sum + 10
+    if testSum > 21:
+      return sum
+    else:
+      return testSum
+  return sum
+
+def playerSum(playerHand):
+  sum = 0
+  for card in playerHand:
+    sum = sum + cardValue(card)
+    testSum = 0
+  if containsAce(playerHand):
+    testSum = sum + 10
+    if testSum > 21:
+      return sum
+    else:
+      return testSum
+  return sum
+
+
+# add cards to dealers hand 
+
+dealerHand.insert(0, gameDeck.pop(gameDeck.index(random.choice(gameDeck))))
+dealerHand.insert(0, gameDeck.pop(gameDeck.index(random.choice(gameDeck))))
+
+# add cards to players hand 
+
+playerHand.insert(0, gameDeck.pop(gameDeck.index(random.choice(gameDeck))))
+playerHand.insert(0, gameDeck.pop(gameDeck.index(random.choice(gameDeck))))
+
+
+#telling player what their hand is
+print("You were dealt " + str(playerHand))
+PHSum = playerSum(playerHand)
+print("The sum of your hand is " + str(PHSum))
+#blank lines for easier reading
+#telling player what the dealer has 
+print("The dealer's face up card is " + str(dealerHand[0]))
+#how do we show what suit the dealer has
+#print("Debug; dealers full hand" + str(dealerHand))
+DHSum = dealerSum(dealerHand)
+#print("Debug; dealer sum hand " + str(DHSum))
+#print("Debug; making sure deck length " + str(len(gameDeck)))
+
+# 
+# INITIALIZATION COMPLETE! :)
+#
+
+#PLAYER TURN 
+
+if PHSum == 21:
+  print("Congratulations! You made Black Jack!")
+  pass
+else:
+  pass
+
+while PHSum < 21:
+  playerChoice2 = input("Would you like to hit (H) or stand (S)?")
+  if playerChoice2 == "H":
+    print("You chose to Hit!")
+    playerHand.insert(0, gameDeck.pop(gameDeck.index(random.choice(gameDeck))))
+    print("You were dealt " + str(playerHand))
+    PHSum = playerSum(playerHand)
+    print("The sum of your hand is now " + str(PHSum))
+    if PHSum == 21:
+      print("Congratulations! You made Black Jack!")
+      break
+    elif PHSum > 21:
+      print("Tough Luck! You Bust. :(")
+    else:
+      continue
+  elif playerChoice2 == "h":
+    print("You chose to Hit!")
+    playerHand.insert(0, gameDeck.pop(gameDeck.index(random.choice(gameDeck))))
+    print("You were dealt " + str(playerHand))
+    PHSum = playerSum(playerHand)
+    print("The sum of your hand is now " + str(PHSum))
+    if PHSum == 21:
+      print("Congratulations! You made Black Jack!")
+      break
+    elif PHSum > 21:
+      print("Tough Luck! You Bust. :(")
+    else:
+      continue
+  elif playerChoice2 == "S":
+    print("You chose to Stand!")
+    break
+  elif playerChoice2 == "s":
+    print("You chose to Stand!")
+    break
+  else:
+    print("invalid choice, please try again!")
+    continue 
+print("Now let's reveal the dealer's hand!")
+print("The dealer has " + str(dealerHand) + " and the sum of the dealers hand is " + str(DHSum) + ".")
+if PHSum <= 21:
+  while DHSum < 17:
+    print("Since the Dealer has a hand that is less than 17, they will draw another card.")
+    dealerHand.insert(0, gameDeck.pop(gameDeck.index(random.choice(gameDeck))))
+    DHSum = dealerSum(dealerHand)
+    print("The Dealer now has " + str(dealerHand) + " and the sum of the Dealer's hand is " + str(DHSum) + ".")
+else:
+  print("Since you already bust, the Dealer wins!")
+  pass
+
+if PHSum < 21:
+  if DHSum > 21:
+    DHSum = dealerSum(dealerHand)
+ #   print("The sum of the Dealer's hand is  " + str(DHSum))
+    print("The Dealer bust, and you win! Congratulations!")
+  elif DHSum < 21:
+    DHSum = dealerSum(dealerHand)
+ #   print("The sum of the Dealer's hand is  " + str(DHSum))
+    if PHSum > DHSum:
+      print("Congratulations! You win!")
+    elif PHSum == 21:
+      print("You made BlackJack, and the Dealer did not! Congratulations, you win!")
+    elif PHSum == DHSum:
+      print("You tied with the House! Congratulations!")
+    else:
+      print("The Dealer has a hand closer to 21, and therefore the House wins. Good luck next time!")
+  elif DHSum == 21:
+    print("The Dealer made BlackJack, and you did not. Good luck next time!")
+  elif DHSum == PHSum:
+    print("You tied with the House! Congratulations!")
+elif PHSum == 21:
+  if DHSum > 21:
+    DHSum = dealerSum(dealerHand)
+  #  print("The sum of the Dealer's hand is  " + str(DHSum))
+    print("The Dealer bust, and you win! Congratulations!")
+  elif DHSum < 21:
+    DHSum = dealerSum(dealerHand)
+    print("The sum of the Dealer's hand is  " + str(DHSum))
+    if PHSum > DHSum:
+      print("Congratulations! You win!")
+    elif PHSum == 21:
+      print("You made BlackJack, and the Dealer did not! Congratulations, you win!")
+    elif PHSum == DHSum:
+      print("You tied with the House! Congratulations!")
+    else:
+      print("The Dealer has a hand closer to 21, and therefore the House wins. Good luck next time!")
+  elif DHSum == PHSum:
+    print("You tied with the House! Congratulations!")
+  
+else:
+   pass
+
+
+
+
